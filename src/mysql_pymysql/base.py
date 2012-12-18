@@ -26,7 +26,7 @@ from django.db.backends.mysql.client import DatabaseClient
 from django.db.backends.mysql.creation import DatabaseCreation
 from .introspection import DatabaseIntrospection
 from django.db.backends.mysql.validation import DatabaseValidation
-from django.utils.safestring import SafeString, SafeUnicode
+from django.utils.safestring import SafeBytes, SafeText
 from django.utils.timezone import is_aware, is_naive, utc
 
 # Raise exceptions for database warnings if DEBUG is on
@@ -368,8 +368,8 @@ class DatabaseWrapper(BaseDatabaseWrapper):
             kwargs['client_flag'] = CLIENT.FOUND_ROWS
             kwargs.update(settings_dict['OPTIONS'])
             self.connection = Database.connect(**kwargs)
-            self.connection.encoders[SafeUnicode] = self.connection.encoders[text_type]
-            self.connection.encoders[SafeString] = self.connection.encoders[str]
+            self.connection.encoders[SafeText] = self.connection.encoders[text_type]
+            self.connection.encoders[SafeBytes] = self.connection.encoders[str]
             connection_created.send(sender=self.__class__, connection=self)
         cursor = self.connection.cursor()
         if new_connection:
